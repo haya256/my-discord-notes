@@ -149,7 +149,8 @@ def with_toc(text, toc):
     pattern = re.compile(re.escape(TOC_START) + r".*?" + re.escape(TOC_END), re.S)
     if not pattern.search(text):
         return None
-    block = f"{TOC_START}\n{toc}\n{TOC_END}"
+    # マーカー(HTMLコメント)と表のあいだに空行がないと、GitHub Pages(kramdown)で表が崩れる
+    block = f"{TOC_START}\n\n{toc}\n\n{TOC_END}"
     return pattern.sub(lambda _: block, text, count=1)
 
 
