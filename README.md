@@ -123,6 +123,7 @@ python3 notes.py verify docs/04-webhooks.md 実機
 | `_layouts/article.html` | 記事のページ。frontmatter の確認日・確認方法・外部サービスを本文の上に、`source` を「参考」として本文の下に出す |
 | `_includes/footer_custom.html` | 全ページの下に出す注意書きとライセンス |
 | `_includes/head_custom.html` | 見た目の細かい調整(CSS) |
+| `_includes/lunr/custom-index.js` | サイト内検索を日本語に対応させる。日本語を2文字ずつに区切って索引を作り、検索ワードの2文字ずつがすべて含まれるページを出す。ひらがな・カタカナ、全角・半角の英数字は区別しない |
 
 ## ライセンス
 
