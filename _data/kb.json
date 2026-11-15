@@ -1,0 +1,12 @@
+{
+  "name": "my-discord-notes",
+  "subject": "Discord",
+  "owner_org": "Discord Inc.",
+  "support_name": "Discord公式サポート",
+  "support_url": "https://support.discord.com/",
+  "description": "Discordの使い方・設定方法をまとめた、自分用の非公式メモ",
+  "github": "haya256/my-discord-notes",
+  "author": "haya256",
+  "template_repo": "haya256/my-notes-template",
+  "is_template": false
+}

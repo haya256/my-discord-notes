@@ -1,6 +1,7 @@
-# GitHub Pages(Jekyll)の設定。記事は docs/ のマークダウンがそのまま使われる。
-title: my-discord-notes
-description: Discordの使い方・設定方法をまとめた、自分用の非公式メモ
+# GitHub Pages(Jekyll)の設定。
+# このファイルは notes.py sync が _data/kb.json から作る。手で直さない(直したいときは KB_GUIDE.md を参照)。
+title: "my-discord-notes"
+description: "Discordの使い方・設定方法をまとめた、自分用の非公式メモ"
 lang: ja
 url: https://haya256.github.io
 baseurl: /my-discord-notes
@@ -30,8 +31,10 @@ gh_edit_link: false
 exclude:
   - README.md
   - CLAUDE.md
+  - KB_GUIDE.md
   - LICENSE
   - notes.py
+  - kb-engine.json
   - pmo/
   - config/
   - data/

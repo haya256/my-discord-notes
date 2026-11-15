@@ -25,6 +25,8 @@ AIチャットに次のように頼みます。
 
 ## AIへの指示
 
+<!-- kb:ai:start -->
+
 このリポジトリを参照して質問に答えるときは、以下の手順とルールに従ってください。
 
 ### 手順
@@ -43,6 +45,8 @@ AIチャットに次のように頼みます。
 - 記事の `thirdparty` にサービス名がある場合、そのサービスについて答えるときは、**Discordの公式機能ではない外部サービスであること**を必ず伝える。公式機能と誤解される言い方をしない
 - マニュアルに書いていない内容は、無理に答えず「マニュアルには記載がない」と伝える
 - 日本語で答える。Discordの画面上の名前は「」で囲む
+
+<!-- kb:ai:end -->
 
 ### 目次
 
@@ -72,61 +76,22 @@ AIチャットに次のように頼みます。
 
 ## 記事の管理(メンテナンス用)
 
+<!-- kb:manage:start -->
+
 記事の追加や確認には、プロジェクトルートの `notes.py` を使います。Python 3 だけで動きます(追加のインストールは不要)。
 
 | コマンド | やること |
 |---|---|
-| `python3 notes.py status` | 記事の一覧を、`verified` と `checked` 付きで表示する |
-| `python3 notes.py status --todo` | まだ実機で確認していない記事(`verified` が「実機」以外)だけ表示する |
-| `python3 notes.py status --thirdparty` | 外部サービスを扱う記事(`thirdparty` が空でない)だけ表示する |
-| `python3 notes.py check` | 記事の書き方と目次を検査する。問題があればエラーを表示する |
-| `python3 notes.py toc` | 上の「目次」と、サイトのトップ(`index.md`)の記事一覧を、各記事の `title`・`summary` から作り直す |
+| `python3 notes.py status` | 記事の一覧を、`verified` と `checked` 付きで表示する(`--todo` で未確認の記事だけ、`--thirdparty` で外部サービスの記事だけ) |
+| `python3 notes.py check` | 記事の書き方、自動で作る部分、共通の部分が手で直されていないかを検査する |
+| `python3 notes.py sync` | README の決まった部分・目次、`index.md` の記事一覧、`_config.yml` を作り直す |
 | `python3 notes.py new SLUG タイトル [説明]` | テンプレートから新しい記事を作り、目次にも追加する |
 | `python3 notes.py verify ファイル 値` | 記事の `verified` を変えて、`checked` を今日の日付にする |
+| `python3 notes.py update` | テンプレートから共通の部分(`notes.py` など)の最新版を取りこむ |
 
-例:
+**このリポジトリのしくみ、記事の書き方のルール、作業のルール(人間・AIとも)は [KB_GUIDE.md](KB_GUIDE.md) にあります。** 記事を書く・直す前に読んでください。
 
-```bash
-python3 notes.py new voice-chat "ボイスチャンネルの使い方" "ボイスチャンネルの入り方・画面共有"
-python3 notes.py verify docs/04-webhooks.md 実機
-```
-
-### 記事の frontmatter
-
-各記事の冒頭には、次の項目を書きます(`docs/_template.md` を参照)。`check` は、これらがそろっているかを検査します。
-
-| 項目 | 内容 |
-|---|---|
-| `title` | 記事のタイトル |
-| `nav_order` | サイトの左メニューでの並び順。ファイル名の番号と同じ数字(例:`06-voice-robotic.md` なら `6`)。`new` が自動で入れる |
-| `summary` | 目次に載せる一行の説明。`toc` はこれを使って目次を作る |
-| `keywords` | grep で見つけやすくするための語句 |
-| `checked` | 最後に内容を見直した日(YYYY-MM-DD)。180日より古いと `check` が注意を出す |
-| `verified` | `実機`(すべて実機で確認)/ `一部実機`(一部だけ確認。どこかはメモに書く)/ `ネットのみ`(未確認) |
-| `thirdparty` | 記事で扱う外部サービスの名前(例:`[Craig]`)。Discord本体の機能だけなら `[]` |
-| `source` | 参考にしたURLや「実機で確認」。複数あるときは `- ` で始まる行を並べる |
-
-### ルール
-
-- 記事のファイル名は「2桁の番号-英小文字.md」(例:`06-voice-robotic.md`)。`_` で始まるファイルは記事として扱わない
-- 目次(`<!-- toc:start -->` と `<!-- toc:end -->` の間)は手で書き換えない。README と `index.md` の両方にある。記事の `summary` を直して `python3 notes.py toc` を実行する
-- 記事からほかの記事を参照するときは、`[05-developer-mode.md](05-developer-mode.md)` のようにリンクで書く(GitHub上でもサイトでもリンクになる)
-- frontmatter の値が `@` などの記号で始まるときは、`"@everyone"` のように引用符で囲む。囲まないとサイトのビルドが失敗する(`check` が検査する)
-- 記事を直したら `python3 notes.py check` で確認する
-- `thirdparty` が空でない記事は、タイトル(`# ...`)の直後に、`>` で始まる注意書きを置く。注意書きには「Discordの公式機能ではありません」という文言と、`thirdparty` に書いたサービス名をすべて含める(`check` が検査する)
-
-## サイト(GitHub Pages)
-
-`main` ブランチに push すると、GitHub Pages が自動でサイトを作り直します(数分かかります)。設定は次のファイルです。
-
-| ファイル | 内容 |
-|---|---|
-| `_config.yml` | サイトの設定。テーマは [Just the Docs](https://just-the-docs.com/)。サイトに出さないファイル(README・notes.py など)もここで指定 |
-| `index.md` | サイトのトップページ。記事一覧は `notes.py toc` が作る |
-| `_layouts/article.html` | 記事のページ。frontmatter の確認日・確認方法・外部サービスを本文の上に、`source` を「参考」として本文の下に出す |
-| `_includes/footer_custom.html` | 全ページの下に出す注意書きとライセンス |
-| `_includes/head_custom.html` | 見た目の細かい調整(CSS) |
-| `_includes/lunr/custom-index.js` | サイト内検索を日本語に対応させる。日本語を2文字ずつに区切って索引を作り、検索ワードの2文字ずつがすべて含まれるページを出す。ひらがな・カタカナ、全角・半角の英数字は区別しない |
+<!-- kb:manage:end -->
 
 ## ライセンス
 
