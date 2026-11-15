@@ -1,5 +1,6 @@
 ---
 title: 会員サービスとDiscordのロール連携
+nav_order: 9
 summary: Patreon・FANBOXなど会員サービスと連携して、会員だけにロールを付ける
 keywords: [会員制, 会員, メンバーシップ, 有料会員, 支援者, ファンクラブ, ロール, 自動付与, 連携, 認証, 限定チャンネル, Patreon, パトレオン, FANBOX, pixivFANBOX, ファンボックス, Ci-en, シエン, note, Fantia, ファンティア, Ko-fi, YouTubeメンバーシップ, Twitch, サブスク]
 checked: 2026-11-04

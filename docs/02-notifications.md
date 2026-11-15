@@ -1,7 +1,8 @@
 ---
 title: 通知を減らす
+nav_order: 2
 summary: 通知を減らす・ミュート・@everyone抑制
-keywords: [通知, ミュート, うるさい, @everyone, @here, メンション, 通知オフ]
+keywords: [通知, ミュート, うるさい, "@everyone", "@here", メンション, 通知オフ]
 checked: 2026-11-04
 verified: 一部実機
 thirdparty: []

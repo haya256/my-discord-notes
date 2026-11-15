@@ -1,5 +1,6 @@
 ---
 title: Webhookの作り方
+nav_order: 4
 summary: Webhookの作り方と注意点、Botとの違い
 keywords: [Webhook, ウェブフック, 連携サービス, Integrations, 自動投稿, 通知, GitHub連携, Bot, ボット, トークン, 書き込み権限, 外部から投稿]
 checked: 2026-11-04

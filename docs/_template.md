@@ -1,5 +1,6 @@
 ---
 title: (記事タイトル)
+nav_order: (番号。notes.py new が自動で入れる)
 summary: (目次に載せる一行の説明)
 keywords: [キーワード1, キーワード2]
 checked: YYYY-MM-DD

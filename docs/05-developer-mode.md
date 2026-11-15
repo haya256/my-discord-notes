@@ -1,5 +1,6 @@
 ---
 title: 開発者モードとIDのコピー
+nav_order: 5
 summary: 開発者モード、IDのコピー
 keywords: [開発者モード, ID, チャンネルID, ユーザーID, サーバーID, Bot開発]
 checked: 2026-11-04

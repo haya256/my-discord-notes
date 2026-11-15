@@ -1,5 +1,6 @@
 ---
 title: ファイル送信の容量上限
+nav_order: 3
 summary: ファイル送信の容量上限、大きいファイルの送り方
 keywords: [ファイル, アップロード, 容量, 上限, MB, Nitro, 動画, 送れない]
 checked: 2026-11-04

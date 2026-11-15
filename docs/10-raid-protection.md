@@ -1,5 +1,6 @@
 ---
 title: レイドプロテクション(レイド対策)
+nav_order: 10
 summary: レイドプロテクション・CAPTCHA・アクティビティアラート・招待の一時停止
 keywords: [レイド, レイドプロテクション, レイド保護, raid, Raid Protection, 荒らし, 大量参加, CAPTCHA, キャプチャ, アクティビティアラート, Activity Alerts, セキュリティアクション, Security Actions, 招待の一時停止, Pause Invites, AutoMod, 認証レベル, 安全設定, Safety Setup]
 checked: 2026-11-15

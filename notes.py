@@ -5,7 +5,7 @@
     python3 notes.py status [--todo] [--thirdparty]
                                         記事の一覧(verified / checked / 外部サービス)を表示する
     python3 notes.py check              記事の frontmatter と README の目次を検査する
-    python3 notes.py toc                README の目次を記事から作り直す
+    python3 notes.py toc                README と index.md(サイトのトップ)の目次を記事から作り直す
     python3 notes.py new SLUG TITLE [SUMMARY]
                                         テンプレートから新しい記事を作り、目次も更新する
     python3 notes.py verify FILE VALUE  記事の verified を変え、checked を今日にする
@@ -22,6 +22,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 DOCS = ROOT / "docs"
 README = ROOT / "README.md"
+INDEX = ROOT / "index.md"  # GitHub Pages のトップページ
 TEMPLATE = DOCS / "_template.md"
 
 REQUIRED = ["title", "summary", "keywords", "checked", "verified", "source"]
@@ -35,6 +36,8 @@ TOC_END = "<!-- toc:end -->"
 
 FRONTMATTER_RE = re.compile(r"\A---\n(.*?)\n---\n", re.S)
 FILENAME_RE = re.compile(r"^(\d{2})-[a-z0-9-]+\.md$")
+# YAML では、この文字で始まる値は引用符で囲まないとエラーになる(GitHub Pages のビルドが失敗する)
+YAML_RESERVED_START = "@`!&*|>%{}"
 
 
 # ---------------------------------------------------------------- 読み書き
@@ -61,14 +64,16 @@ def parse_frontmatter(text):
         if item and current is not None:
             if not isinstance(data[current], list):
                 data[current] = []
-            data[current].append(item.group(1).strip())
+            data[current].append(unquote(item.group(1).strip()))
             continue
         kv = re.match(r"^([A-Za-z_]+):\s*(.*)$", line)
         if not kv:
             continue
         key, value = kv.group(1), kv.group(2).strip()
         if value.startswith("[") and value.endswith("]"):
-            value = [v.strip() for v in value[1:-1].split(",") if v.strip()]
+            value = [unquote(v.strip()) for v in value[1:-1].split(",") if v.strip()]
+        else:
+            value = unquote(value)
         data[key] = value
         current = key
     return data
@@ -77,6 +82,31 @@ def parse_frontmatter(text):
 def articles():
     """docs/ の記事(_ で始まるファイルを除く)を番号順に返す。"""
     return sorted(p for p in DOCS.glob("*.md") if not p.name.startswith("_"))
+
+
+def unquote(value):
+    """前後の引用符("..." または '...')を取り除く。"""
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+        return value[1:-1]
+    return value
+
+
+def yaml_unsafe_values(text):
+    """frontmatter の中で、引用符なしで YAML の予約文字から始まる値を返す。"""
+    m = FRONTMATTER_RE.match(text)
+    if not m:
+        return []
+    values = []
+    for line in m.group(1).splitlines():
+        item = re.match(r"^\s+-\s*(.*)$", line)
+        kv = re.match(r"^[A-Za-z_]+:\s*(.*)$", line)
+        raw = item.group(1) if item else kv.group(1) if kv else ""
+        raw = raw.strip()
+        if raw.startswith("[") and raw.endswith("]"):
+            values += [v.strip() for v in raw[1:-1].split(",")]
+        else:
+            values.append(raw)
+    return [v for v in values if v and v[0] in YAML_RESERVED_START]
 
 
 def load(path):
@@ -94,6 +124,7 @@ def today():
 # ---------------------------------------------------------------- 目次
 
 def build_toc():
+    """README 用の目次(ファイル名と説明)。AI がファイル名で記事を探せるようにする。"""
     lines = ["| ファイル | 内容 |", "|---|---|"]
     for path in articles():
         fm = load(path) or {}
@@ -102,13 +133,29 @@ def build_toc():
     return "\n".join(lines)
 
 
-def readme_with_toc(readme_text):
-    """README の目次部分を作り直した全文を返す。マーカーが無ければ None。"""
+def build_index_toc():
+    """index.md(サイトのトップ)用の目次。記事へのリンク付き。"""
+    lines = ["| 記事 | 内容 |", "|---|---|"]
+    for path in articles():
+        fm = load(path) or {}
+        title = fm.get("title") or path.stem
+        summary = fm.get("summary") or ""
+        lines.append(f"| [{title}]({rel(path)}) | {summary} |")
+    return "\n".join(lines)
+
+
+def with_toc(text, toc):
+    """text の目次部分を toc に置きかえた全文を返す。マーカーが無ければ None。"""
     pattern = re.compile(re.escape(TOC_START) + r".*?" + re.escape(TOC_END), re.S)
-    if not pattern.search(readme_text):
+    if not pattern.search(text):
         return None
-    block = f"{TOC_START}\n{build_toc()}\n{TOC_END}"
-    return pattern.sub(lambda _: block, readme_text, count=1)
+    block = f"{TOC_START}\n{toc}\n{TOC_END}"
+    return pattern.sub(lambda _: block, text, count=1)
+
+
+def toc_targets():
+    """目次を持つファイルと、その目次の作り方。"""
+    return [(README, build_toc), (INDEX, build_index_toc)]
 
 
 # ---------------------------------------------------------------- サードパーティ
@@ -187,6 +234,14 @@ def cmd_check(args):
             if not fm.get(key):
                 errors.append(f"{name}: {key} がない、または空")
 
+        if FILENAME_RE.match(path.name):
+            expected = str(int(path.name[:2]))
+            if fm.get("nav_order") != expected:
+                errors.append(f"{name}: nav_order はファイル名の番号と同じ {expected} にする(サイトのメニューの並び順)")
+
+        for v in yaml_unsafe_values(path.read_text(encoding="utf-8")):
+            errors.append(f"{name}: 「{v}」は記号で始まるので引用符で囲む(例: \"{v}\")。囲まないとサイトのビルドが失敗する")
+
         if "thirdparty" not in fm:
             errors.append(f"{name}: thirdparty がない(外部サービスを扱わないなら thirdparty: [] と書く)")
         else:
@@ -218,12 +273,16 @@ def cmd_check(args):
             except ValueError:
                 errors.append(f"{name}: checked は YYYY-MM-DD 形式にする(今は「{checked}」)")
 
-    readme = README.read_text(encoding="utf-8")
-    updated = readme_with_toc(readme)
-    if updated is None:
-        errors.append(f"README.md: 目次のマーカー({TOC_START} / {TOC_END})がない")
-    elif updated != readme:
-        errors.append("README.md: 目次が記事と合っていない → python3 notes.py toc で直せる")
+    for target, build in toc_targets():
+        if not target.exists():
+            errors.append(f"{rel(target)}: ファイルがない")
+            continue
+        current = target.read_text(encoding="utf-8")
+        updated = with_toc(current, build())
+        if updated is None:
+            errors.append(f"{rel(target)}: 目次のマーカー({TOC_START} / {TOC_END})がない")
+        elif updated != current:
+            errors.append(f"{rel(target)}: 目次が記事と合っていない → python3 notes.py toc で直せる")
 
     for w in warnings:
         print(f"注意: {w}")
@@ -237,17 +296,19 @@ def cmd_check(args):
 
 
 def cmd_toc(args):
-    readme = README.read_text(encoding="utf-8")
-    updated = readme_with_toc(readme)
-    if updated is None:
-        print(f"エラー: README.md に目次のマーカー({TOC_START} / {TOC_END})がない")
-        return 1
-    if updated == readme:
-        print("目次は最新です。")
-        return 0
-    README.write_text(updated, encoding="utf-8")
-    print("README.md の目次を更新しました。")
-    return 0
+    status = 0
+    for target, build in toc_targets():
+        current = target.read_text(encoding="utf-8") if target.exists() else ""
+        updated = with_toc(current, build())
+        if updated is None:
+            print(f"エラー: {rel(target)} に目次のマーカー({TOC_START} / {TOC_END})がない")
+            status = 1
+        elif updated == current:
+            print(f"{rel(target)} の目次は最新です。")
+        else:
+            target.write_text(updated, encoding="utf-8")
+            print(f"{rel(target)} の目次を更新しました。")
+    return status
 
 
 def cmd_new(args):
@@ -263,6 +324,7 @@ def cmd_new(args):
 
     text = TEMPLATE.read_text(encoding="utf-8")
     text = re.sub(r"^title: .*$", f"title: {args.title}", text, count=1, flags=re.M)
+    text = re.sub(r"^nav_order: .*$", f"nav_order: {num}", text, count=1, flags=re.M)
     if args.summary:
         text = re.sub(r"^summary: .*$", f"summary: {args.summary}", text, count=1, flags=re.M)
     text = re.sub(r"^checked: .*$", f"checked: {today().isoformat()}", text, count=1, flags=re.M)
@@ -313,10 +375,10 @@ def main():
     p.add_argument("--thirdparty", action="store_true", help="外部サービス(thirdparty)を扱う記事だけ表示する")
     p.set_defaults(func=cmd_status)
 
-    p = sub.add_parser("check", help="frontmatter と README の目次を検査する")
+    p = sub.add_parser("check", help="frontmatter と README・index.md の目次を検査する")
     p.set_defaults(func=cmd_check)
 
-    p = sub.add_parser("toc", help="README の目次を作り直す")
+    p = sub.add_parser("toc", help="README と index.md の目次を作り直す")
     p.set_defaults(func=cmd_toc)
 
     p = sub.add_parser("new", help="テンプレートから新しい記事を作る")
