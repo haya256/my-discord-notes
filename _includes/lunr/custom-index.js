@@ -69,4 +69,56 @@ if (!this.__jaTokenizerInstalled) {
     }
     return originalClause.call(this, clause);
   };
+
+  // 4. 検索結果のハイライト位置の重なりをまとめる。
+  //    2文字ずつのかたまりは1文字ずつ重なる(「ブー」「ース」「スト」)。テーマのハイライト処理は重なりを想定しておらず、
+  //    そのままだと「ブーースト」のように文字が崩れる。項目(title / content)ごとに、全部の語の位置を
+  //    つなげた区間にまとめ、最初の語にだけ持たせる(テーマはすべての語の位置を集めて使うので、結果は同じになる)。
+  //    lunr は索引のデータをそのまま渡してくるので、中身は書きかえず、新しいオブジェクトに置きかえる
+  //    (書きかえると索引が壊れ、次の検索のハイライトがずれる)。
+  var withPosition = function (fieldMetadata, positions) {
+    var copy = {};
+    Object.keys(fieldMetadata).forEach(function (key) {
+      copy[key] = fieldMetadata[key];
+    });
+    copy.position = positions;
+    return copy;
+  };
+  var originalQuery = lunr.Index.prototype.query;
+  lunr.Index.prototype.query = function (fn) {
+    var results = originalQuery.call(this, fn);
+    results.forEach(function (result) {
+      var metadata = result.matchData.metadata;
+      var merged = {};
+      var owner = {};
+      Object.keys(metadata).forEach(function (term) {
+        Object.keys(metadata[term]).forEach(function (field) {
+          var positions = metadata[term][field].position;
+          if (!positions) {
+            return;
+          }
+          merged[field] = (merged[field] || []).concat(positions);
+          if (owner[field] === undefined) {
+            owner[field] = term;
+          } else {
+            metadata[term][field] = withPosition(metadata[term][field], []);
+          }
+        });
+      });
+      Object.keys(merged).forEach(function (field) {
+        var list = merged[field].slice().sort(function (a, b) { return a[0] - b[0]; });
+        var out = [];
+        list.forEach(function (p) {
+          var last = out[out.length - 1];
+          if (last && p[0] <= last[0] + last[1]) {
+            last[1] = Math.max(last[1], p[0] + p[1] - last[0]);
+          } else {
+            out.push([p[0], p[1]]);
+          }
+        });
+        metadata[owner[field]][field] = withPosition(metadata[owner[field]][field], out);
+      });
+    });
+    return results;
+  };
 }
