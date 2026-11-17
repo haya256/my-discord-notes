@@ -2,10 +2,10 @@
 title: アプリ(発見のアプリ)
 nav_order: 17
 summary: 「発見」の「アプリ」で探せるもの。サーバーに追加するか自分に追加するか、アクティビティ、管理者が止める方法
-keywords: [アプリ, App, Apps, 発見, Discover, アプリディレクトリ, App Directory, アプリを追加, Add App, サーバーに追加, Add to Server, マイアプリに追加, Add to My Apps, ユーザーアプリ, 外部のアプリ, 外部のアプリを使用, Use External Apps, アプリコマンドを使う, Use Application Commands, アクティビティ, Activities, アクティビティを使用, Use Activities, Watch Together, YouTube, Whiteboard, ゲーム, Bot, ボット, スラッシュコマンド, 認証済みアプリ, Authorized Apps, 連携サービス, Integrations, クエスト]
+keywords: [アプリ, App, Apps, 発見, Discover, アプリディレクトリ, App Directory, アプリを追加, Add App, サーバーに追加, Add to Server, マイアプリに追加, Add to My Apps, ユーザーアプリ, 外部のアプリ, 外部のアプリを使用, Use External Apps, アプリコマンドを使う, Use Application Commands, アクティビティ, Activities, アクティビティを使用, Use Activities, Watch Together, YouTube, Whiteboard, ゲーム, Bot, ボット, スラッシュコマンド, 認証済みアプリ, Authorized Apps, 連携サービス, Integrations, クエスト, Craig, クレイグ, 録音, 録音Bot, サードパーティ, 外部サービス]
 checked: 2026-11-17
 verified: 一部実機
-thirdparty: []
+thirdparty: [Craig]
 source:
   - https://support.discord.com/hc/articles/21334461140375 (公式ヘルプ「Using Apps on Discord」。本文は取得できず、検索結果の要約のみ)
   - https://support-apps.discord.com/hc/en-us/articles/26592957841303 (公式ヘルプ「How to Discover and Add Apps」。本文は取得できず、検索結果の要約のみ)
@@ -13,10 +13,14 @@ source:
   - https://support.discord.com/hc/articles/25323248535319 (公式ヘルプ「Discover Tab」。本文は取得できず、検索結果の要約のみ)
   - https://discord.com/blog/how-to-use-discord-apps (Discord公式ブログ、2022-10-18。アプリディレクトリ、サーバーへの追加)
   - https://discord.com/blog/server-activities-games-voice-watch-together (Discord公式ブログ。アクティビティ、Watch Together)
+  - https://craig.chat/ (Craig の公式サイト。この記事の Craig の情報は、07-voice-recording.md の内容から)
+  - https://www.guidingtech.com/how-to-record-discord-calls/ (非公式。アプリディレクトリで Craig を探して追加する手順)
   - 実機で確認(PC。「発見」の「アプリ」の画面に、注目・ゲーム・エンターテインメント・管理とツール・交流・ユーティリティのタブと、Watch Together、Lofi、Whiteboard、ゲームなどが並んでいた)
 ---
 
 # アプリ(発見のアプリ)
+
+> **注意**:この記事の中で例として出てくる Craig は、Discordの公式機能ではありません。外部の開発者が提供するサードパーティのサービスです(公式サイト:https://craig.chat/)。紹介はしますが、推奨や保証はしません。
 
 ## 要点
 
@@ -56,6 +60,21 @@ PCでは、サーバー一覧(画面の左端)のいちばん下にある「発�
 | アクティビティ | ボイスチャンネルやDMの通話の中で、みんなで遊ぶゲームや、同時に見る動画など | Watch Together、Whiteboard、ゲーム |
 
 - 1つのアプリが、Botとコマンドとアクティビティを兼ねていることもある
+
+### 例:Craig(録音のBot)
+
+ボイスチャンネルの録音に使う Craig も、今の呼び方では「アプリ」の一つ。くわしい使い方は [07-voice-recording.md](07-voice-recording.md) を参照。
+
+- **Craig は Discord の公式機能ではなく、外部の開発者が提供するサービス**。「アプリ」として追加できても、Discord が作ったものではない
+- アプリの種類のうち、**Bot** と **コマンド** の2つを兼ねている
+  - Bot:ボイスチャンネルに入って、話す人ごとに録音する
+  - コマンド:`/join`(録音を始める)、`/stop`(止める)などで操作する
+- 追加先は「**サーバーに追加**」の方。追加するには、そのサーバーで「サーバー管理」の権限が要る
+- 追加のしかたは2通りある
+  - Craig の公式サイト(https://craig.chat/)の「Add to Discord」から([07-voice-recording.md](07-voice-recording.md) の手順)
+  - アプリディレクトリで「Craig」を検索して、「アプリを追加」から(非公式の解説より。今の「発見」の「アプリ」の画面で見つかるかは未確認)
+- どちらの場合も、似た名前の偽物に気をつける。追加する前に、アプリのページの開発者やリンク先が公式サイト(craig.chat)になっているかを見る
+- 「アクティビティを使用」などの権限とは関係なく、Craig を使えるかどうかは「アプリコマンドを使用」の権限で決まると考えられる(下の「管理者ができること」。未確認)
 
 ## 追加のしかた:サーバーに追加するか、自分に追加するか
 
@@ -103,4 +122,5 @@ PCでは、サーバー一覧(画面の左端)のいちばん下にある「発�
 - 公式ヘルプによると、アプリディレクトリはPC版とブラウザ版だけで使える、という情報がある(スマホは未確認)
 - アプリディレクトリは2022年10月に始まった。サーバーの管理者向けには「サーバー設定」の中からも開けた(公式ブログ、2022年。今の画面は未確認)
 - アプリの中には、有料のプラン(プレミアム)があるものもある
+- Craig のことは、[07-voice-recording.md](07-voice-recording.md) の情報(Craig の公式サイトのまとめ。実機では未確認)をもとに書いた
 - 外部の開発者のアプリについて困ったときは、アプリのページにある、そのアプリの公式サーバー(サポートサーバー)で聞く
