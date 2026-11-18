@@ -3,7 +3,7 @@ title: アプリ(発見のアプリ)
 nav_order: 17
 summary: 「発見」の「アプリ」で探せるもの。サーバーに追加するか自分に追加するか、アクティビティ、管理者が止める方法
 keywords: [アプリ, App, Apps, 発見, Discover, アプリディレクトリ, App Directory, アプリを追加, Add App, サーバーに追加, Add to Server, マイアプリに追加, Add to My Apps, ユーザーアプリ, 外部のアプリ, 外部のアプリを使用, Use External Apps, アプリコマンドを使う, Use Application Commands, アクティビティ, Activities, アクティビティを使用, Use Activities, Watch Together, YouTube, Whiteboard, ゲーム, Bot, ボット, スラッシュコマンド, 認証済みアプリ, Authorized Apps, 連携サービス, Integrations, クエスト, Craig, クレイグ, 録音, 録音Bot, サードパーティ, 外部サービス]
-checked: 2026-11-17
+checked: 2026-11-18
 verified: 一部実機
 thirdparty: [Craig]
 source:
@@ -15,7 +15,7 @@ source:
   - https://discord.com/blog/server-activities-games-voice-watch-together (Discord公式ブログ。アクティビティ、Watch Together)
   - https://craig.chat/ (Craig の公式サイト。この記事の Craig の情報は、07-voice-recording.md の内容から)
   - https://www.guidingtech.com/how-to-record-discord-calls/ (非公式。アプリディレクトリで Craig を探して追加する手順)
-  - 実機で確認(PC。「発見」の「アプリ」の画面に、注目・ゲーム・エンターテインメント・管理とツール・交流・ユーティリティのタブと、Watch Together、Lofi、Whiteboard、ゲームなどが並んでいた)
+  - 実機で確認(PC。「発見」の場所はサーバー一覧のいちばん下(2026-11-18)。「発見」の「アプリ」の画面に、注目・ゲーム・エンターテインメント・管理とツール・交流・ユーティリティのタブと、Watch Together、Lofi、Whiteboard、ゲームなどが並んでいた)
 ---
 
 # アプリ(発見のアプリ)
@@ -31,7 +31,7 @@ source:
 
 ## 「発見」の「アプリ」の画面
 
-PCでは、サーバー一覧(画面の左端)のいちばん下にある「発見」のアイコンから開く(公式ヘルプの要約より)。左のメニューに「アプリ」「サーバー」「クエスト」が並ぶ(実機で確認)。
+PCでは、サーバー一覧(画面の左端)のいちばん下にある「発見」のアイコンから開く(2026-11-18 実機で確認)。左のメニューに「アプリ」「サーバー」「クエスト」が並ぶ(実機で確認)。
 
 - **アプリ**:アプリのカタログ。上のタブで「注目」「ゲーム」「エンターテインメント」「管理とツール」「交流」「ユーティリティ」に分かれていて、右上の「検索」で名前を探せる(実機で確認)
 - **サーバー**:公開されているサーバーを探す
