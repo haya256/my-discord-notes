@@ -19,7 +19,7 @@ Discordの使い方・設定方法を、自分用にまとめた知識ベース�
 
 ウェブのページを読める AI チャットに、サイトの URL と質問を渡すだけで、記事をもとに答えてもらえます。
 
-> 次のページをもとに教えて。(聞きたいこと)
+> 次のページをもとに教えて。Orbs ってなに？
 >
 > https://haya256.github.io/my-discord-notes/
 
@@ -34,7 +34,7 @@ Claude Code など、リポジトリを読める道具を使うなら、次の�
 >
 > https://github.com/haya256/my-discord-notes
 >
-> 質問:(聞きたいこと)
+> 質問:Orbs ってなに？
 
 <!-- kb:ask:end -->
 
